@@ -1,0 +1,6 @@
+@WocommereceReactTypeScript.NetCore_HostAddress = http://localhost:5015
+
+GET {{WocommereceReactTypeScript.NetCore_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
