@@ -106,47 +106,7 @@ namespace Service
             }
         }
 
-
-        //private string HashPassword(string password)
-        //{
-        //    try
-        //    {
-        //        if (string.IsNullOrEmpty(password))
-        //        {
-        //            throw new ArgumentException("Password cannot be null or empty.");
-        //        }
-
-        //        byte[] salt = new byte[16];
-        //        using (var rng = new System.Security.Cryptography.RNGCryptoServiceProvider())
-        //        {
-        //            rng.GetBytes(salt); // Generate a random salt
-        //        }
-
-        //        string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-        //            password: password,
-        //            salt: salt,
-        //            prf: KeyDerivationPrf.HMACSHA256,
-        //            iterationCount: 10000,
-        //            numBytesRequested: 256 / 8)); // 256-bit hash
-
-        //        return hashed;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Generate log file
-        //        string logFileName = $"Log_HashPassword_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
-        //        string logFilePath = Path.Combine(_env.WebRootPath, "Logs", logFileName);
-
-        //        Directory.CreateDirectory(Path.Combine(_env.WebRootPath, "Logs"));
-
-        //        File.WriteAllText(logFilePath, $"Error: {ex.Message}\nStackTrace: {ex.StackTrace}");
-
-        //        // Log the error using ILogger
-        //        _logger.LogError($"Exception in HashPassword Method: {ex.Message}");
-        //        throw;  // Re-throw the exception after logging
-        //    }
-        //}
-
+        //Login
         public async Task<string> Login(UserLoginDTO userDTO)
         {
             try
@@ -180,10 +140,7 @@ namespace Service
             }
         }
 
-        //private bool VerifyPassword(string enteredPassword, string storedHash)
-        //{
-        //    return HashPassword(enteredPassword) == storedHash;
-        //}
+      
 
         private async Task<string> GenerateJwtToken(User user)
         {
