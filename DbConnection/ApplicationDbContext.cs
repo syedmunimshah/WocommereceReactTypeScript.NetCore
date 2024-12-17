@@ -15,8 +15,8 @@ namespace DbConnection
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<Screen> Screen { get; set; }
+        public DbSet<Privileges> Privileges { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
-        public DbSet<RoleScreen> RoleScreen { get; set; }
+        public DbSet<RolePrivileges> RolePrivileges { get; set; }
     }
 }

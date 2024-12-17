@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DbConnection;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -15,7 +16,7 @@ namespace WocommereceReactTypeScript.NetCore.Controllers
         {
             _authServicecs = authServicecs;
         }
-
+        //Register start
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterDTO userDTO)
         {
@@ -27,6 +28,42 @@ namespace WocommereceReactTypeScript.NetCore.Controllers
             return BadRequest(new { error = result });
         }
 
+        [HttpGet]
+        public async Task<IEnumerable<User>> GellAll()
+        {
+         return await _authServicecs.GellAll();
+            
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateRegister(int id, UserUpdateRegisterDTO userUpdateRegisterDTO) 
+        {
+           var updateUser =await  _authServicecs.UpdateRegister(id, userUpdateRegisterDTO);
+            return Ok($"{updateUser}");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FindUserById(int id)
+        {
+            var user = await _authServicecs.FindUserById(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+            return Ok(user);
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var result = await _authServicecs.DeleteUser(id);
+            if (result.Contains("not found"))
+            {
+                return NotFound(result);
+            }
+            return Ok(result);
+        }
+
+        // Register end
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDTO loginDTO)
         {

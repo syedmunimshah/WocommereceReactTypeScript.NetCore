@@ -6,11 +6,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DbConnection.Migrations
 {
     /// <inheritdoc />
-    public partial class inaitaildatabaseupdatename : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Privileges",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UrlPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    dateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Privileges", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -24,23 +41,6 @@ namespace DbConnection.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Screen",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UrlPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    dateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Screen", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,29 +62,29 @@ namespace DbConnection.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleScreen",
+                name: "RolePrivileges",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<int>(type: "int", nullable: false),
-                    ScreenId = table.Column<int>(type: "int", nullable: false),
+                    PrivilegesId = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     dateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoleScreen", x => x.Id);
+                    table.PrimaryKey("PK_RolePrivileges", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoleScreen_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
+                        name: "FK_RolePrivileges_Privileges_PrivilegesId",
+                        column: x => x.PrivilegesId,
+                        principalTable: "Privileges",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RoleScreen_Screen_ScreenId",
-                        column: x => x.ScreenId,
-                        principalTable: "Screen",
+                        name: "FK_RolePrivileges_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -118,14 +118,14 @@ namespace DbConnection.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleScreen_RoleId",
-                table: "RoleScreen",
-                column: "RoleId");
+                name: "IX_RolePrivileges_PrivilegesId",
+                table: "RolePrivileges",
+                column: "PrivilegesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleScreen_ScreenId",
-                table: "RoleScreen",
-                column: "ScreenId");
+                name: "IX_RolePrivileges_RoleId",
+                table: "RolePrivileges",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
@@ -142,13 +142,13 @@ namespace DbConnection.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "RoleScreen");
+                name: "RolePrivileges");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
-                name: "Screen");
+                name: "Privileges");
 
             migrationBuilder.DropTable(
                 name: "Roles");

@@ -88,7 +88,7 @@ namespace Service
                 await _ApplicationDbContext.Users.AddAsync(user);
                 await _ApplicationDbContext.SaveChangesAsync();
 
-                return $"User registered successfully: {user.Name}";
+                return $"User registered successfully: {user}";
             }
             catch (Exception ex)
             {
@@ -105,6 +105,76 @@ namespace Service
                 return "An error occurred while registering the user. Please try again later.";
             }
         }
+
+        public async Task<IEnumerable<User>> GellAll()
+        {
+            return await _ApplicationDbContext.Users.ToListAsync();
+        }
+
+        public async Task<string> FindUserById(int id)
+        {
+            if (id <= 0)
+            {
+                return $"this user id is not in my record=>{id}";
+            }
+
+            var user = await  _ApplicationDbContext.Users.FirstOrDefaultAsync(x=>x.Id==id);
+            return $"{user}"; 
+        }
+
+
+        public async Task<string> UpdateRegister(int id,UserUpdateRegisterDTO userUpdateRegisterDTO)
+        {
+            if (id<=0) 
+            {
+                return $"id is null or 0 =>{id}";
+            }
+            var userUpdate = await _ApplicationDbContext.Users.FindAsync(id);
+            if (userUpdate == null) {
+                return $"This User is not in My record Id{id}";
+            }
+
+            // Save image to the server
+            string uniqueFileName = $"{Guid.NewGuid()}_{userUpdateRegisterDTO.Image.FileName}";
+            string imagePath = Path.Combine(_env.WebRootPath, "UserImages", uniqueFileName);
+
+            using (var fs = new FileStream(imagePath, FileMode.Create))
+            {
+                await userUpdateRegisterDTO.Image.CopyToAsync(fs);
+            }
+
+            userUpdate.Name=userUpdateRegisterDTO.Name;
+            userUpdate.Email= userUpdateRegisterDTO.Email;
+            userUpdate.Password = _passwordHasher.HashPassword(userUpdate,userUpdateRegisterDTO.Password);
+            userUpdate.Image = uniqueFileName;
+            userUpdate.CreateAt = DateTime.Now;
+
+            _ApplicationDbContext.Users.Update(userUpdate);
+            await _ApplicationDbContext.SaveChangesAsync();
+
+            return $"User updated successfully: {userUpdate.Name}";
+        }
+
+        public async Task<string> DeleteUser(int id)
+        {
+            if (id <= 0)
+            {
+                return $"Invalid user ID: {id}";
+            }
+
+            var userToDelete = await _ApplicationDbContext.Users.FindAsync(id);
+            if (userToDelete == null)
+            {
+                return $"User not found with ID: {id}";
+            }
+
+            // Remove the user from the database
+            _ApplicationDbContext.Users.Remove(userToDelete);
+            await _ApplicationDbContext.SaveChangesAsync();
+
+            return $"User with ID {id} deleted successfully.";
+        }
+// register complete
 
         //Login
         public async Task<string> Login(UserLoginDTO userDTO)

@@ -13,7 +13,7 @@ namespace DbConnection
         public int Id { get; set; }
         public string Name { get; set; }
         public ICollection<UserRole> UserRoles { get; set; }
-        public ICollection<RoleScreen> RoleScreens { get; set; }
+        public ICollection<RolePrivileges> RolePrivilegess { get; set; }
         public bool IsActive { get; set; }
 
         public DateTime CreateAt { get; set; } = DateTime.Now;
