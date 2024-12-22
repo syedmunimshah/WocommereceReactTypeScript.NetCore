@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Service;
+using Sieve.Services;
 using System.Security.Claims;
 using System.Text;
 
@@ -15,7 +16,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<AuthServicecs>();
+builder.Services.AddTransient<AuthService>();
+builder.Services.AddTransient<RoleService>();
+builder.Services.AddSingleton<SieveProcessor>();
 
 // Database context configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -74,7 +77,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("User", policy => policy.RequireRole("User"));
+    options.AddPolicy("Employee", policy => policy.RequireRole("Employee"));
+    options.AddPolicy("Hr", policy => policy.RequireRole("Hr"));
 });
 
 var app = builder.Build();

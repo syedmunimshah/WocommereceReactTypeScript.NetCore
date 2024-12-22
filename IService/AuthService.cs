@@ -14,17 +14,18 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Sieve.Models;
 
 namespace Service
 {
-    public class AuthServicecs
+    public class AuthService
     {
         private readonly ApplicationDbContext _ApplicationDbContext;
-        private readonly ILogger<AuthServicecs> _logger;
+        private readonly ILogger<AuthService> _logger;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
-        public AuthServicecs(ApplicationDbContext applicationDbContext, ILogger<AuthServicecs> logger, IWebHostEnvironment env, IConfiguration configuration)
+        public AuthService(ApplicationDbContext applicationDbContext, ILogger<AuthService> logger, IWebHostEnvironment env, IConfiguration configuration)
         {
             _ApplicationDbContext = applicationDbContext;
             _logger = logger;
@@ -57,14 +58,8 @@ namespace Service
                     return "Image is required!";
                 }
 
-
                 // Hash password
                 string hashedPassword = _passwordHasher.HashPassword(null, userDTO.Password);
-
-
-
-
-
                 // Save image to the server
                 string uniqueFileName = $"{Guid.NewGuid()}_{userDTO.Image.FileName}";
                 string imagePath = Path.Combine(_env.WebRootPath, "UserImages", uniqueFileName);
@@ -73,22 +68,34 @@ namespace Service
                 {
                     await userDTO.Image.CopyToAsync(fs);
                 }
-
+                if (string.IsNullOrEmpty(userDTO.RoleId.ToString()))
+                {
+                    return "Role Id Is required";
+                }
+                Role roleExistingUser = await _ApplicationDbContext.Roles.FirstOrDefaultAsync(x=>x.Id==userDTO.RoleId);
+              if(roleExistingUser == null)
+                {
+                    return $"Role Id Is not Assign This {emailExistingUser}";
+                }
                 // Create user entity
                 User user = new User()
                 {
                     Name = userDTO.Name,
                     Email = userDTO.Email,
                     Password = hashedPassword,
+                    Image = uniqueFileName,
                     IsActive = true,
-                    Image = uniqueFileName
+                    RoleId = roleExistingUser.Id,
+                    CreateBy= "System Generated",
+                    CreateAt=DateTime.UtcNow
+                    
                 };
 
                 // Save user to the database
                 await _ApplicationDbContext.Users.AddAsync(user);
                 await _ApplicationDbContext.SaveChangesAsync();
 
-                return $"User registered successfully: {user}";
+                return $"User registered successfully: {user.Email}";
             }
             catch (Exception ex)
             {
@@ -106,48 +113,79 @@ namespace Service
             }
         }
 
-        public async Task<IEnumerable<User>> GellAll()
+        public async Task<IEnumerable<UserGetAllDTO>> GellAll()
         {
-            return await _ApplicationDbContext.Users.ToListAsync();
+            var userRole = await _ApplicationDbContext.Users.Include(x => x.Role).ToListAsync();
+
+          return  userRole.Select(x=>new UserGetAllDTO {
+                  UserId=x.Id,
+                  UserName=x.Name,
+                  Email=x.Email,
+                  Image=x.Image,
+                  UserIsActive=x.IsActive,
+                  RoleId=x.RoleId,
+                  RoleName=x.Role.Name,
+                  CreateBy=x.CreateBy,
+                  CreateAt=x.CreateAt,
+                  UpdateAt=x.UpdateAt
+          });
+           
         }
 
-        public async Task<string> FindUserById(int id)
+        public async Task<UserFindByIdDTO?> FindUserById(int id)
+        {
+            var userRole = await _ApplicationDbContext.Users.Include(x => x.Role).FirstOrDefaultAsync(u=>u.Id==id);
+
+            UserFindByIdDTO userFindByIdDTO = new UserFindByIdDTO() 
+            {
+                UserId = userRole.Id,
+                UserName = userRole.Name,
+                Email = userRole.Email,
+                Image = userRole.Image,
+                UserIsActive = userRole.IsActive,
+                RoleId = userRole.RoleId,
+                RoleName = userRole.Role.Name,
+                CreateBy = userRole.CreateBy,
+                CreateAt = userRole.CreateAt,
+                UpdateAt = userRole.UpdateAt
+            };
+
+            return userFindByIdDTO;
+          
+
+            //return await _ApplicationDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+        }
+            
+
+        public async Task<string> UpdateRegister(int id, UserUpdateRegisterDTO userUpdateRegisterDTO)
         {
             if (id <= 0)
-            {
-                return $"this user id is not in my record=>{id}";
-            }
-
-            var user = await  _ApplicationDbContext.Users.FirstOrDefaultAsync(x=>x.Id==id);
-            return $"{user}"; 
-        }
-
-
-        public async Task<string> UpdateRegister(int id,UserUpdateRegisterDTO userUpdateRegisterDTO)
-        {
-            if (id<=0) 
             {
                 return $"id is null or 0 =>{id}";
             }
             var userUpdate = await _ApplicationDbContext.Users.FindAsync(id);
-            if (userUpdate == null) {
+            if (userUpdate == null)
+            {
                 return $"This User is not in My record Id{id}";
             }
 
             // Save image to the server
             string uniqueFileName = $"{Guid.NewGuid()}_{userUpdateRegisterDTO.Image.FileName}";
             string imagePath = Path.Combine(_env.WebRootPath, "UserImages", uniqueFileName);
+            FileStream fs = new FileStream(imagePath, FileMode.Create);
+            userUpdateRegisterDTO.Image.CopyTo(fs);
 
-            using (var fs = new FileStream(imagePath, FileMode.Create))
-            {
-                await userUpdateRegisterDTO.Image.CopyToAsync(fs);
-            }
 
-            userUpdate.Name=userUpdateRegisterDTO.Name;
-            userUpdate.Email= userUpdateRegisterDTO.Email;
-            userUpdate.Password = _passwordHasher.HashPassword(userUpdate,userUpdateRegisterDTO.Password);
-            userUpdate.Image = uniqueFileName;
-            userUpdate.CreateAt = DateTime.Now;
+            userUpdate.Name = userUpdateRegisterDTO.Name;
+            userUpdate.Email = userUpdateRegisterDTO.Email;
+            userUpdate.Password = _passwordHasher.HashPassword(userUpdate, userUpdateRegisterDTO.Password);
+            userUpdate.Image = userUpdateRegisterDTO.Image.FileName;// only name
+            userUpdate.Image = imagePath;// only name
+            userUpdate.IsActive = userUpdateRegisterDTO.IsActive;
+            userUpdate.RoleId=userUpdateRegisterDTO.RoleId;
+            userUpdate.UpdateAt = DateTime.Now;
+            userUpdate.CreateBy = "System Generated";
 
             _ApplicationDbContext.Users.Update(userUpdate);
             await _ApplicationDbContext.SaveChangesAsync();
@@ -174,7 +212,7 @@ namespace Service
 
             return $"User with ID {id} deleted successfully.";
         }
-// register complete
+        //register complete
 
         //Login
         public async Task<string> Login(UserLoginDTO userDTO)
@@ -210,30 +248,38 @@ namespace Service
             }
         }
 
-      
+
 
         private async Task<string> GenerateJwtToken(User user)
         {
-            var userWithRoles = await _ApplicationDbContext.Users.Include(x => x.UserRoles).ThenInclude(ur => ur.role).FirstOrDefaultAsync(x => x.Id == user.Id);
+            var userWithRoles = await _ApplicationDbContext.Users.Include(x => x.Role).ThenInclude(ur => ur.RolePrivileges).FirstOrDefaultAsync(x => x.Id == user.Id);
             if (userWithRoles == null)
             {
                 throw new Exception("User not found.");
             }
             var claims = new List<Claim> {
 
-                  new Claim(JwtRegisteredClaimNames.Sub,_configuration["Jwt:Subject"]),
-                  new Claim("Id",user.Id.ToString()),
-                new Claim("Email",user.Email.ToString()),
-            };
+                        new Claim(JwtRegisteredClaimNames.Sub,_configuration["Jwt:Subject"]),
+                        new Claim("Id",user.Id.ToString()),
+                        new Claim("Email",user.Email.ToString()),
+                    };
 
             // Add roles to claims
-            if (userWithRoles.UserRoles != null)
+            //if (userWithRoles.UserRoles != null)
+            //{
+            //    foreach (var userRole in userWithRoles.UserRoles)
+            //    {
+            //        claims.Add(new Claim(ClaimTypes.Role, userRole.role.Name));
+            //    }
+            //}
+
+        
+
+            if(userWithRoles.Role!=null && userWithRoles.RoleId==userWithRoles.Role.Id)
             {
-                foreach (var userRole in userWithRoles.UserRoles)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, userRole.role.Name));
-                }
+                claims.Add(new Claim(ClaimTypes.Role, userWithRoles.Role.Name));
             }
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:key"]));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
@@ -245,7 +291,7 @@ namespace Service
 
                                     );
             var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
-             return  tokenValue;
+            return tokenValue;
 
         }
 

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.DTO;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace WocommereceReactTypeScript.NetCore.Controllers
 {
@@ -11,16 +13,18 @@ namespace WocommereceReactTypeScript.NetCore.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly AuthServicecs _authServicecs;
-        public AuthController(AuthServicecs authServicecs)
+        private readonly AuthService _AuthService;
+        private readonly SieveProcessor _sieveProcessor;
+        public AuthController(AuthService AuthService,SieveProcessor sieveProcessor)
         {
-            _authServicecs = authServicecs;
+            _AuthService = AuthService;
+            _sieveProcessor= sieveProcessor;
         }
         //Register start
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterDTO userDTO)
         {
-            var result = await _authServicecs.Register(userDTO);
+            var result = await _AuthService.Register(userDTO);
             if (result.Contains("successfully"))
             {
                 return Ok(new { message = result });
@@ -29,33 +33,42 @@ namespace WocommereceReactTypeScript.NetCore.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<User>> GellAll()
+        public async Task<IEnumerable<UserGetAllDTO>> GellAll()
         {
-         return await _authServicecs.GellAll();
-            
+            return await _AuthService.GellAll();
+
         }
 
+
+
         [HttpPost]
-        public async Task<IActionResult> UpdateRegister(int id, UserUpdateRegisterDTO userUpdateRegisterDTO) 
+        public async Task<IActionResult> UpdateRegister(int id, UserUpdateRegisterDTO userUpdateRegisterDTO)
         {
-           var updateUser =await  _authServicecs.UpdateRegister(id, userUpdateRegisterDTO);
+            var updateUser = await _AuthService.UpdateRegister(id, userUpdateRegisterDTO);
             return Ok($"{updateUser}");
         }
 
         [HttpGet]
         public async Task<IActionResult> FindUserById(int id)
         {
-            var user = await _authServicecs.FindUserById(id);
+            if (id <= 0)
+            {
+                return BadRequest($"Invalid ID: {id}");
+            }
+
+            var user = await _AuthService.FindUserById(id);
             if (user == null)
             {
                 return NotFound($"User with ID {id} not found.");
             }
+
             return Ok(user);
         }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var result = await _authServicecs.DeleteUser(id);
+            var result = await _AuthService.DeleteUser(id);
             if (result.Contains("not found"))
             {
                 return NotFound(result);
@@ -63,11 +76,11 @@ namespace WocommereceReactTypeScript.NetCore.Controllers
             return Ok(result);
         }
 
-        // Register end
+        //// Register end
         [HttpPost]
-        public async Task<IActionResult> Login(UserLoginDTO loginDTO)
+          public async Task<IActionResult> Login(UserLoginDTO loginDTO)
         {
-            var token = await _authServicecs.Login(loginDTO);
+            var token = await _AuthService.Login(loginDTO);
 
             if (token == "Invalid email or password.")
             {
@@ -87,11 +100,17 @@ namespace WocommereceReactTypeScript.NetCore.Controllers
         }
 
 
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "Employee")]
         [HttpGet]
         public IActionResult User()
         {
             return Ok("Welcome to the User Dashboard!");
+        }
+        [Authorize(Roles = "Hr")]
+        [HttpGet]
+        public IActionResult Hr()
+        {
+            return Ok("Welcome to the Hr Dashboard!");
         }
 
 

@@ -13,7 +13,9 @@ namespace Service.DTO
         public string Email { get; set; }
         public string Password { get; set; }
         public IFormFile Image { get; set; }
-        //public bool IsActive { get; set; }
+        public bool IsActive { get; set; }
+        public int RoleId { get; set; }
+        public string CreateBy { get; set; }
 
     }
 }

@@ -12,10 +12,13 @@ namespace DbConnection
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<UserRole> UserRoles { get; set; }
-        public ICollection<RolePrivileges> RolePrivilegess { get; set; }
+        public string CreateBy { get; set; }
         public bool IsActive { get; set; }
+        public DateTime? CreateAt { get; set; }
+        public DateTime? UpdateAt { get; set; }
+        public ICollection<User> Users { get; set; }
+        public ICollection<RolePrivileges> RolePrivileges { get; set; }
 
-        public DateTime CreateAt { get; set; } = DateTime.Now;
+
     }
 }

@@ -19,6 +19,7 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DbConnection\DbConnection.csproj" />
     <ProjectReference Include="..\Repository\IRepository.csproj" />
   </ItemGroup>
 
