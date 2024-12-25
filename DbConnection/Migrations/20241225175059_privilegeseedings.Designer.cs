@@ -4,6 +4,7 @@ using DbConnection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DbConnection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241225175059_privilegeseedings")]
+    partial class privilegeseedings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +62,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 1,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(448),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 392, DateTimeKind.Utc).AddTicks(9968),
                             IsActive = true,
                             Slug = "user-Register",
                             Type = "Post",
@@ -68,7 +71,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 2,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1346),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(824),
                             IsActive = true,
                             Slug = "user-GellAll",
                             Type = "Get",
@@ -77,7 +80,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 3,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1349),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(826),
                             IsActive = true,
                             Slug = "user-UpdateRegister",
                             Type = "Post",
@@ -86,7 +89,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 4,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1351),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(828),
                             IsActive = true,
                             Slug = "user-FindUserById",
                             Type = "Get",
@@ -95,7 +98,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 5,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1352),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(829),
                             IsActive = true,
                             Slug = "user-DeleteUser",
                             Type = "Delete",
@@ -104,7 +107,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 6,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1354),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(831),
                             IsActive = true,
                             Slug = "user-Login",
                             Type = "Post",
@@ -113,7 +116,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 7,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1356),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(833),
                             IsActive = true,
                             Slug = "Admin",
                             Type = "Get",
@@ -122,7 +125,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 8,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1358),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(834),
                             IsActive = true,
                             Slug = "User",
                             Type = "Get",
@@ -131,7 +134,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 9,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1359),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(836),
                             IsActive = true,
                             Slug = "Hr",
                             Type = "Get",
@@ -140,7 +143,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 10,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1361),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(838),
                             IsActive = true,
                             Slug = "Role-AddRole",
                             Type = "Post",
@@ -149,7 +152,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 11,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1363),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(839),
                             IsActive = true,
                             Slug = "Role-GellAll",
                             Type = "Get",
@@ -158,7 +161,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 12,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1365),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(841),
                             IsActive = true,
                             Slug = "Role-UpdateRole",
                             Type = "Post",
@@ -167,7 +170,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 13,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1366),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(842),
                             IsActive = true,
                             Slug = "Role-FindRoleById",
                             Type = "Get",
@@ -176,7 +179,7 @@ namespace DbConnection.Migrations
                         new
                         {
                             Id = 14,
-                            CreateAt = new DateTime(2024, 12, 25, 18, 34, 35, 936, DateTimeKind.Utc).AddTicks(1368),
+                            CreateAt = new DateTime(2024, 12, 25, 17, 50, 58, 393, DateTimeKind.Utc).AddTicks(844),
                             IsActive = true,
                             Slug = "Role-Delete",
                             Type = "Delete",
@@ -239,6 +242,10 @@ namespace DbConnection.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PrivilegesId");
+
+                    b.HasIndex("RoleId");
+
                     b.ToTable("RolePrivileges");
                 });
 
@@ -289,34 +296,23 @@ namespace DbConnection.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("PrivilegesRolePrivileges", b =>
+            modelBuilder.Entity("DbConnection.RolePrivileges", b =>
                 {
-                    b.Property<int>("PrivilegesId")
-                        .HasColumnType("int");
+                    b.HasOne("DbConnection.Privileges", "Privileges")
+                        .WithMany("RolePrivileges")
+                        .HasForeignKey("PrivilegesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("RolePrivilegesId")
-                        .HasColumnType("int");
+                    b.HasOne("DbConnection.Role", "Role")
+                        .WithMany("RolePrivileges")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasKey("PrivilegesId", "RolePrivilegesId");
+                    b.Navigation("Privileges");
 
-                    b.HasIndex("RolePrivilegesId");
-
-                    b.ToTable("PrivilegesRolePrivileges");
-                });
-
-            modelBuilder.Entity("RoleRolePrivileges", b =>
-                {
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RolePrivilegesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("RoleId", "RolePrivilegesId");
-
-                    b.HasIndex("RolePrivilegesId");
-
-                    b.ToTable("RoleRolePrivileges");
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("DbConnection.User", b =>
@@ -330,38 +326,15 @@ namespace DbConnection.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("PrivilegesRolePrivileges", b =>
+            modelBuilder.Entity("DbConnection.Privileges", b =>
                 {
-                    b.HasOne("DbConnection.Privileges", null)
-                        .WithMany()
-                        .HasForeignKey("PrivilegesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DbConnection.RolePrivileges", null)
-                        .WithMany()
-                        .HasForeignKey("RolePrivilegesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("RoleRolePrivileges", b =>
-                {
-                    b.HasOne("DbConnection.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DbConnection.RolePrivileges", null)
-                        .WithMany()
-                        .HasForeignKey("RolePrivilegesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("RolePrivileges");
                 });
 
             modelBuilder.Entity("DbConnection.Role", b =>
                 {
+                    b.Navigation("RolePrivileges");
+
                     b.Navigation("Users");
                 });
 #pragma warning restore 612, 618

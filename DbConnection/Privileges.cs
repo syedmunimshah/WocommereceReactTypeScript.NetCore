@@ -15,9 +15,9 @@ namespace DbConnection
         public string Type { get; set; } // HTTP Type (GET, POST, PUT, DELETE)
         public string UrlPath { get; set; }  //API endpoint path (e.g., /api/users)
         public bool IsActive { get; set; }
-        public DateTime CreateAt { get; set; } 
+        public DateTime? CreateAt { get; set; } 
 
-        public DateTime UpdateAt { get; set; }
+        public DateTime? UpdateAt { get; set; }
         public ICollection<RolePrivileges> RolePrivileges { get; set; }
 
 

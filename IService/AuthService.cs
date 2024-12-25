@@ -57,7 +57,7 @@ namespace Service
                 {
                     return "Image is required!";
                 }
-
+               
                 // Hash password
                 string hashedPassword = _passwordHasher.HashPassword(null, userDTO.Password);
                 // Save image to the server

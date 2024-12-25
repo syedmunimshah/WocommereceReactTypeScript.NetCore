@@ -11,7 +11,11 @@ namespace Service.DTO
     {
        
         public string Name { get; set; }
-        
+        //public int RoleId { get; set; }
+        public List<int> PrivilegesId { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime RoleUpdateAt { get; set; }
+
 
     }
 }
