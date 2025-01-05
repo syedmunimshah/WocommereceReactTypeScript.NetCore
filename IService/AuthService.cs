@@ -113,7 +113,27 @@ namespace Service
             }
         }
 
-        public async Task<IEnumerable<UserGetAllDTO>> GellAll()
+        //public IQueryable<UserGetAllDTO> GetAll()
+        //{
+        //    var userRole = _ApplicationDbContext.Users.Include(x => x.Role);
+
+        //    return userRole.Select(x => new UserGetAllDTO
+        //    {
+        //        UserId = x.Id,
+        //        UserName = x.Name,
+        //        Email = x.Email,
+        //        Image = x.Image,
+        //        UserIsActive = x.IsActive,
+        //        RoleId = x.RoleId,
+        //        RoleName = x.Role.Name,
+        //        CreateBy = x.CreateBy,
+        //        CreateAt = x.CreateAt,
+        //        UpdateAt = x.UpdateAt
+        //    });
+
+        //}
+
+        public async Task<IEnumerable<UserGetAllDTO>> GetAll()
         {
             var userRole = await _ApplicationDbContext.Users.Include(x => x.Role).ToListAsync();
 

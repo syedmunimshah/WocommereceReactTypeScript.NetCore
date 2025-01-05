@@ -33,12 +33,20 @@ namespace WocommereceReactTypeScript.NetCore.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<UserGetAllDTO>> GellAll()
+        public async Task<IEnumerable<UserGetAllDTO>> GetAll()
         {
-            return await _AuthService.GellAll();
+            return await _AuthService.GetAll();
 
         }
 
+        //[HttpGet]
+        //public IActionResult GetAll(SieveModel sieveModel)
+        //{
+        //   var models = _AuthService.GetAll();
+        //    models = _sieveProcessor.Apply(sieveModel, models);
+        //    return Ok(models.ToList());
+
+        //}
 
 
         [HttpPost]

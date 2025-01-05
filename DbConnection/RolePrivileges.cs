@@ -12,9 +12,9 @@ namespace DbConnection
         [Key]
         public int Id { get; set; }
         public int RoleId { get; set; }
-        public ICollection<Role> Role { get; set; }
+        public Role Role { get; set; }
         public int PrivilegesId { get; set; }
-        public ICollection<Privileges> Privileges { get; set; }
+        public Privileges Privileges { get; set; }
         public bool IsActive { get; set; }
         public DateTime? CreateAt { get; set; }
         public DateTime? UpdateAt { get; set; }
