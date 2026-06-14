@@ -39,9 +39,11 @@ namespace WocommereceReactTypeScript.NetCore.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<GetAllUserRoleDTO>> GetAll()
+        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10)
         {
-            return await _roleService.GetAllUserRolePrivilages();
+            var result = await _roleService.GetAllUserRolePrivilages(pageNumber, pageSize);
+            return Ok(result);
+           
 
         }
 

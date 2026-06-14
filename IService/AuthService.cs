@@ -15,6 +15,8 @@ using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Sieve.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Text.RegularExpressions;
 
 namespace Service
 {
@@ -83,7 +85,7 @@ namespace Service
                     Name = userDTO.Name,
                     Email = userDTO.Email,
                     Password = hashedPassword,
-                    Image = uniqueFileName,
+                    Image = imagePath,
                     IsActive = true,
                     RoleId = roleExistingUser.Id,
                     CreateBy= "System Generated",
@@ -113,44 +115,63 @@ namespace Service
             }
         }
 
-        //public IQueryable<UserGetAllDTO> GetAll()
-        //{
-        //    var userRole = _ApplicationDbContext.Users.Include(x => x.Role);
 
-        //    return userRole.Select(x => new UserGetAllDTO
-        //    {
-        //        UserId = x.Id,
-        //        UserName = x.Name,
-        //        Email = x.Email,
-        //        Image = x.Image,
-        //        UserIsActive = x.IsActive,
-        //        RoleId = x.RoleId,
-        //        RoleName = x.Role.Name,
-        //        CreateBy = x.CreateBy,
-        //        CreateAt = x.CreateAt,
-        //        UpdateAt = x.UpdateAt
-        //    });
+
+        //public async Task<IEnumerable<UserGetAllDTO>> GetAll()
+        //{
+        //    var userRole = await _ApplicationDbContext.Users.Include(x => x.Role).ToListAsync();
+
+        //  return  userRole.Select(x=>new UserGetAllDTO {
+        //          UserId=x.Id,
+        //          UserName=x.Name,
+        //          Email=x.Email,
+        //          Image=x.Image,
+        //          UserIsActive=x.IsActive,
+        //          RoleId=x.RoleId,
+        //          RoleName=x.Role.Name,
+        //          CreateBy=x.CreateBy,
+        //          CreateAt=x.CreateAt,
+        //          UpdateAt=x.UpdateAt
+        //  });
 
         //}
 
-        public async Task<IEnumerable<UserGetAllDTO>> GetAll()
+        public async Task<PagedResult<UserGetAllDTO>> GetAll(int pageNumber, int pageSize)
         {
-            var userRole = await _ApplicationDbContext.Users.Include(x => x.Role).ToListAsync();
+            var query = _ApplicationDbContext.Users.Include(x => x.Role).AsQueryable();
 
-          return  userRole.Select(x=>new UserGetAllDTO {
-                  UserId=x.Id,
-                  UserName=x.Name,
-                  Email=x.Email,
-                  Image=x.Image,
-                  UserIsActive=x.IsActive,
-                  RoleId=x.RoleId,
-                  RoleName=x.Role.Name,
-                  CreateBy=x.CreateBy,
-                  CreateAt=x.CreateAt,
-                  UpdateAt=x.UpdateAt
-          });
-           
+            var totalRecords = await query.CountAsync(); // Total records count
+
+            //pageSize ka mtlb hy ek page py kitny record hngy
+            //pageNumber bata raha hai ke hum kis page ka data fetch kar rahe hain.
+            var users = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => new UserGetAllDTO
+                {
+                    UserId = x.Id,
+                    UserName = x.Name,
+                    Email = x.Email,
+                    Image = x.Image,
+                    UserIsActive = x.IsActive,
+                    RoleId = x.RoleId,
+                    RoleName = x.Role.Name,
+                    CreateBy = x.CreateBy,
+                    CreateAt = x.CreateAt,
+                    UpdateAt = x.UpdateAt
+                })
+                .ToListAsync(); // Query ko execute karna
+
+            return new PagedResult<UserGetAllDTO>
+            {
+                TotalRecords = totalRecords,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize),
+                Data = users
+            };
         }
+
 
         public async Task<UserFindByIdDTO?> FindUserById(int id)
         {
@@ -173,7 +194,7 @@ namespace Service
             return userFindByIdDTO;
           
 
-            //return await _ApplicationDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+           
 
         }
             
@@ -200,7 +221,7 @@ namespace Service
             userUpdate.Name = userUpdateRegisterDTO.Name;
             userUpdate.Email = userUpdateRegisterDTO.Email;
             userUpdate.Password = _passwordHasher.HashPassword(userUpdate, userUpdateRegisterDTO.Password);
-            userUpdate.Image = userUpdateRegisterDTO.Image.FileName;// only name
+            //userUpdate.Image = userUpdateRegisterDTO.Image.FileName;// only name
             userUpdate.Image = imagePath;// only name
             userUpdate.IsActive = userUpdateRegisterDTO.IsActive;
             userUpdate.RoleId=userUpdateRegisterDTO.RoleId;
@@ -252,7 +273,7 @@ namespace Service
                 }
 
                 // Validate password
-                if (_passwordHasher.VerifyHashedPassword(null, user.Password, userDTO.Password) != PasswordVerificationResult.Success)
+                if (_passwordHasher.VerifyHashedPassword(user, user.Password, userDTO.Password) != PasswordVerificationResult.Success)
                 {
                     return "Invalid password.";
                 }

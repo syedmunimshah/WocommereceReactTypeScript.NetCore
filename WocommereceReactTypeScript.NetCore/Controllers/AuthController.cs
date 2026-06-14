@@ -32,21 +32,22 @@ namespace WocommereceReactTypeScript.NetCore.Controllers
             return BadRequest(new { error = result });
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<UserGetAllDTO>> GetAll()
-        {
-            return await _AuthService.GetAll();
-
-        }
-
         //[HttpGet]
-        //public IActionResult GetAll(SieveModel sieveModel)
+        //public async Task<IEnumerable<UserGetAllDTO>> GetAll()
         //{
-        //   var models = _AuthService.GetAll();
-        //    models = _sieveProcessor.Apply(sieveModel, models);
-        //    return Ok(models.ToList());
+        //    return await _AuthService.GetAll();
 
         //}
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10)
+        {
+            var result = await _AuthService.GetAll(pageNumber, pageSize);
+            return Ok(result);
+        }
+
+
+
 
 
         [HttpPost]
