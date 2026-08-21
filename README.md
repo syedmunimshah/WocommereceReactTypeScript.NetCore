@@ -35,6 +35,8 @@ Interfaces live in their own `IService` project rather than beside the implement
 
 **Authentication** — JWT bearer tokens with all four validations enabled (issuer, audience, lifetime, signing key). Three role policies are registered: **Admin**, **Employee** and **Hr**.
 
+The middleware order is deliberate: `UseAuthentication()` runs before `UseAuthorization()`, since the first is what reads the bearer token and builds `User`. Reversed, the role policies would evaluate against an identity that has not been populated yet and always fail.
+
 **Filtering and paging** — the API uses [Sieve](https://github.com/Biarity/Sieve), so list endpoints accept sorting, filtering and pagination from the query string instead of each controller hand-rolling its own parameters.
 
 **Swagger** — configured with a bearer security definition, so protected endpoints can be called from the UI after clicking **Authorize** and pasting `Bearer <token>`.
@@ -95,10 +97,9 @@ The React app expects the API's base URL; the CORS policy is already set up for 
 
 ## Notes
 
-Two things worth knowing before extending this:
-
-- **`app.UseAuthentication()` is missing from the pipeline** in `Program.cs` — only `UseAuthorization()` is registered. JWT is fully configured, but without the authentication middleware the token is never read, so `User` arrives unpopulated and role policies cannot pass. Adding `app.UseAuthentication();` immediately before `app.UseAuthorization();` is the fix.
-- `WeatherForecastController.cs` and `WeatherForecast.cs` are leftovers from the Web API template and are not part of the application.
+- `WeatherForecastController.cs` and `WeatherForecast.cs` are leftovers from the ASP.NET Core Web API template and are not part of the application.
+- Swagger is only mapped in the Development environment, so a published build will not expose it.
+- `Jwt:Key` is read straight from configuration — in a real deployment that belongs in user secrets or an environment variable rather than `appsettings.json`.
 
 ---
 
