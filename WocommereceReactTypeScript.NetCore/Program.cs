@@ -101,6 +101,10 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowReactApp");
 app.UseHttpsRedirection();
 
+// Authentication has to run before authorization: this is what reads the
+// bearer token and builds User. Without it the role policies above would
+// always fail, because there would be no identity to check them against.
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
